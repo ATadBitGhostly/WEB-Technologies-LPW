@@ -1,0 +1,240 @@
+/* Colors I Used
+
+Background: #c9ddf1
+Header and Footer: #000922
+Header and Footer Text : #f3f3f4
+Link Text: #0ba9dd
+Still thinking where to use this: #5e94ba
+
+
+*/
+
+*, *::before, *::after {
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+body {
+    /* background-color: #c9ddf1; */
+    background-image: linear-gradient(to bottom, #c9ddf1 0%, #c9ddf1 69%, #f8f8fa 100%);
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ==================================================== */
+/* ========= Bootstrap custom element Section ========= */
+/* ==================================================== */
+
+.bg-slightyDarkBlue {
+    background-color:#000922;
+}
+
+
+.list-group-item {
+    border: none !important;
+}
+
+/* ==================================================== */
+/* =============== Miscellaneous Section ============== */
+/* ==================================================== */
+
+.hidden {
+    display: none;
+}
+
+.service-images {
+    width: 100px;
+    height: 100px;
+}
+
+/* ==================================================== */
+/* ================== Contact page Section ================== */
+/* ==================================================== */
+.navbar.scrolled {
+    background-color: #5e94ba;
+}
+
+footer div p.mb-0 {
+    display: inline;
+}
+
+#dynamicDate {
+    display: inline;
+}
+
+.hoverEffect {
+    background-color: #5e94ba;
+}
+
+/* =================================================== */
+/* ================ Dark Mode Section ================ */
+/* =================================================== */
+
+.dark-mode {
+    background-color: #000922 !important;
+    background-image: none;
+    color: #f3f3f4;
+}
+
+.dark-mode .navbar.scrolled {
+    background-color: #02195a;
+}
+
+.dark-mode .bg-slightyDarkBlue {
+    background-color: #0c1838;
+}
+
+.dark-mode .hoverEffect {
+    background-color: #02195a;
+}
+
+.dark-mode .card {
+    background-color: #0c1838;
+    color: #f3f3f4;
+    border-color: #2a3a5a;
+}
+
+.dark-mode .text-primary-emphasis {
+    color: #99bbee !important;
+}
+
+.dark-mode .timeline::after {
+    background-color: #f0f0f0;
+}
+
+.dark-mode .form-control {
+    background-color: #02195a;
+    color: #f3f3f4;
+    border-color: #2a3a5a;
+}
+
+.dark-mode .form-select {
+    background-color: #02195a;
+    color: #f3f3f4;
+    border-color: #2a3a5a;
+}
+
+.dark-mode .form-control::placeholder {
+    color: #d9e3ff;
+}
+
+.dark-mode .list-group {
+    --bs-list-group-color: #f3f3f4;
+    --bs-list-group-bg: #02195a;
+}
+
+/* ==================================================== */
+/* ================== About page Section ================== */
+/* ==================================================== */
+
+.about-picture {
+    border-radius: 50%;
+    max-width: 200px;
+    width: 90%;
+    height: auto;
+}
+
+/* Timeline Container */
+.timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* The vertical line */
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    background-color: #333;
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    margin-left: -2px;
+}
+
+.timeline-date {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+
+
+/* ==================================================== */
+/* ================== Responsive Section ================== */
+/* ==================================================== */
+
+@media only screen and (max-width: 850px) {
+
+    .contact-section {
+        flex-direction: column-reverse;
+    }
+
+}
+
+@media only screen and (max-width: 769px) {
+    
+
+    .header-links-container {
+        display: none;
+    }
+
+    .dropdown {
+        display: block;
+    }
+
+}
+
+@media only screen and (max-width: 426px) {
+
+    h1 {
+        font-size: 24px; 
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    a {
+        font-size: 14px;
+    }
+    
+    .about-picture {
+        width: 60%;
+    }
+
+    .timeline-item {
+        padding: 0;
+    }
+
+    .timeline::after {
+        display: none;
+    }
+
+    .contact-section {
+        padding: 0;
+    }
+
+}
+
+@media only screen and (max-width: 376px) {
+
+    /* .card {
+        width: 250px;
+    } */
+
+}
+
+@media only screen and (max-width: 321px) {
+/* 
+    .card {
+        width: 200px;
+    } */
+
+}
