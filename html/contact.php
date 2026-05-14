@@ -60,6 +60,12 @@ session_start();
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
+                        <a href="cart.php" class="nav-link">
+                            <i class="bi bi-cart"></i>
+                            <span id="cart-count" class="badge border">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="index.php" class="nav-link">Home</a>
                     </li>
                     <li class="nav-item">
@@ -67,6 +73,9 @@ session_start();
                     </li>
                     <li class="nav-item">
                         <a href="services.php" class="nav-link">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="product.php" class="nav-link">Products</a>
                     </li>
                     <li class="nav-item">
                         <a href="contact.php" class="nav-link active" aria-current="page">Contact</a>
@@ -193,5 +202,7 @@ session_start();
 
     <script src="../scripts/contact.js"></script>
     <script src="../scripts/script-dm-head-foot.js"></script>
+    <script src="../scripts/cart.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', updateCartCount);</script>
 </body>
 </html>

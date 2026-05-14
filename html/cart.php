@@ -1,22 +1,7 @@
 <?php
 session_start();
-require_once __DIR__ . '/../classes/Database.php';
-require_once __DIR__ . '/../classes/Service.php';
-
-$db = new Database();
-$conn = $db->connect();
-$serviceManager = new Service($conn);
-
-// 5.3 Logic: Handle Search Input
-$searchTerm = $_GET['search'] ?? '';
-$services = [];
-
-if (!empty($searchTerm)) {
-    $services = $serviceManager->search($searchTerm);
-} else {
-    $services = $serviceManager->readAll();
-}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,13 +13,12 @@ if (!empty($searchTerm)) {
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <title>Services - Sports Page 101</title>
+    <title>Main Page</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-slightyDarkBlue">
 
+<nav class="navbar navbar-expand-lg navbar-dark bg-slightyDarkBlue">
         <div class="container-fluid">
-
             <a href="#" class="navbar-brand">Sports Page 101</a>
             <button type="button" class="btn text-white" id="themeToggler"><i class="bi bi-moon-stars" id="dark-mode-icon"></i></button>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +39,7 @@ if (!empty($searchTerm)) {
                         <a href="about.php" class="nav-link">About</a>
                     </li>
                     <li class="nav-item">
-                        <a href="services.php" class="nav-link active" aria-current="page">Services</a>
+                        <a href="services.php" class="nav-link">Services</a>
                     </li>
                     <li class="nav-item">
                         <a href="product.php" class="nav-link">Products</a>
@@ -86,64 +70,72 @@ if (!empty($searchTerm)) {
     <main>
         <section class="py-5">
             <div class="container">
-                <h1 class="display-4 fw-normal">Our Services</h1>
-                <p class="lead mt-3">Here you can find information about our services and offerings at Sports Page 101.</p>
-            </div>
-        </section>
-        
-        <hr class="container my-0">
+                <h1 class="display-4 fw-normal">Your Cart</h1>
+                <hr>
 
-        <section class="py-4">
-            <div class="container">
-                <form action="services.php" method="GET" class="d-flex gap-3">
-                    <input type="text" name="search" id="search-input" 
-                           class="form-control w-auto flex-grow-1" 
-                           placeholder="Search services..." 
-                           value="<?= htmlspecialchars($searchTerm) ?>">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                    <?php if(!empty($searchTerm)): ?>
-                        <a href="services.php" class="btn btn-secondary">Clear</a>
-                    <?php endif; ?>
-                </form>
-            </div>
-        </section>
+                <!-- Tukšs grozs -->
+                <div id="cart-empty" class="text-center py-5" style="display:none;">
+                    <i class="bi bi-cart-x" style="font-size: 4rem; color: gray;"></i>
+                    <p class="lead mt-3 text-muted">Your cart is empty.</p>
+                    <a href="product.php" class="btn btn-primary mt-2">
+                        <i class="bi bi-arrow-left"></i> Back to Products
+                    </a>
+                </div>
 
-        <section class="py-5">
-            <div class="container">
-                <div class="row justify-content-center text-center" id="services-grid">
-                    
-                    <?php if (empty($services)): ?>
-                        <div class="col-12">
-                            <p class="text-muted">No services found matching your search.</p>
-                        </div>
-                    <?php else: ?>
-                        <?php foreach ($services as $s): ?>
-                            <div class="col-lg-3 col-md-6 my-2">
-                                <div class="card h-100 shadow-sm">
-                                    <div class="card-body">
-                                        <?php 
-                                            // Handle the image path correctly
-                                            // DB saves "images\news.png", we are in "html/services.php"
-                                            // We need to go up one level to root, then into images
-                                            $imgSrc = "../" . str_replace('\\', '/', $s['image']);
-                                        ?>
-                                        <img src="<?= htmlspecialchars($imgSrc) ?>" 
-                                             alt="<?= htmlspecialchars($s['title']) ?> Icon" 
-                                             class="service-images mb-3" 
-                                             style="max-height: 100px; width: auto;">
-                                        
-                                        <h2 class="h4"><?= htmlspecialchars($s['title']) ?></h2>
-                                        <p class="card-text"><?= htmlspecialchars($s['description']) ?></p>
+                <!-- Grozs ar produktiem -->
+                <div id="cart-content">
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-items">
+                                <!-- JS aizpilda šeit -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Kopsumma -->
+                    <div class="row justify-content-end">
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Order Summary</h5>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Total:</span>
+                                        <span class="fw-bold" id="cart-total">€0.00</span>
+                                    </div>
+                                    <div class="d-grid gap-2 mt-3">
+                                        <?php if (isset($_SESSION['user_id'])): ?>
+                                            <a href="checkout.php" class="btn btn-primary">
+                                                Proceed to Checkout
+                                            </a>
+                                        <?php else: ?>
+                                            <a href="login.php" class="btn btn-primary">
+                                                Login to Checkout
+                                            </a>
+                                        <?php endif; ?>
+                                        <button onclick="clearCart()" class="btn btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Clear Cart
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </section>
     </main>
+
     <footer class="bg-slightyDarkBlue text-light py-4">
         <div class="container text-center">
             <div class="mb-2">
@@ -151,13 +143,26 @@ if (!empty($searchTerm)) {
                 <a href="#" class="link-light text-decoration-none me-3 link-opacity-75-hover">Twitter</a>
                 <a href="#" class="link-light text-decoration-none me-3 link-opacity-75-hover">Instagram</a>
             </div>
-            <p class="mb-0">&copy; <p id="dynamicDate"></p> Sports Page 101. All rights reserved.</p>
+            <p class="mb-0">&copy; <span id="dynamicDate"></span> Sports Page 101. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <script src="../scripts/script_service.js"></script>
     <script src="../scripts/script-dm-head-foot.js"></script>
     <script src="../scripts/cart.js"></script>
     <script>document.addEventListener('DOMContentLoaded', updateCartCount);</script>
+    <script>
+        // Lapa ielādējas → parāda grozu
+        document.addEventListener('DOMContentLoaded', function () {
+            renderCart();
+
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                document.getElementById('cart-content').style.display = 'none';
+                document.getElementById('cart-empty').style.display = 'block';
+            }
+        });
+    </script>
+
 </body>
 </html>
