@@ -10,10 +10,20 @@ exit;
 
 
 // delete function
-if (isset($_GET['delete_id'])) {
-    $id = $_GET['delete_id'];
+if (isset($_GET['delete_service_id'])) {
+    $id = $_GET['delete_service_id'];
 
     $stmt = $conn->prepare("DELETE FROM services WHERE id = ?");
+    $stmt->execute([$id]);
+
+    header("Location: dashboard.php?deleted=1");
+    exit();
+}
+
+if (isset($_GET['delete_product_id'])) {
+    $id = $_GET['delete_product_id'];
+
+    $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
     $stmt->execute([$id]);
 
     header("Location: dashboard.php?deleted=1");
@@ -24,6 +34,9 @@ $username = $_SESSION['username'];
 
 $stmt = $conn->query('SELECT * FROM services');
 $services = $stmt->fetchAll();
+
+$stmt = $conn->query('SELECT * FROM products');
+$products = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -157,9 +170,84 @@ $services = $stmt->fetchAll();
                                         <a href="./admin/edit_service.php?id=<?= $service['id'] ?>" class="btn btn-sm btn-warning me-1">
                                             <i class="bi bi-pencil"></i> Edit
                                         </a>
-                                        <a href="dashboard.php?delete_id=<?= $service['id'] ?>"
+                                        <a href="dashboard.php?delete_service_id=<?= $service['id'] ?>"
                                         class="btn btn-sm btn-danger"
                                         onclick="return confirm('Delete this service?')">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </section>
+        <!-- Products Section -->
+        <section class="py-5">
+            <div class="container">
+
+                <?php if (isset($_GET['deleted'])): ?>
+                    <div class="alert alert-success">Product deleted successfully.</div>
+                <?php endif; ?>
+                <?php if (isset($_GET['added'])): ?>
+                    <div class="alert alert-success">Product added successfully.</div>
+                <?php endif; ?>
+                <?php if (isset($_GET['updated'])): ?>
+                    <div class="alert alert-success">Product updated successfully.</div>
+                <?php endif; ?>
+            </div>
+        </section>
+        <hr class="container my-0">
+
+        <section class="py-5">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>All Products</h2>
+                    <a href="./admin/add_product.php" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Add Product
+                    </a>
+                </div>
+
+                <?php if (empty($products)): ?>
+                    <div class="alert alert-warning">No products found. Add one above!</div>
+                <?php else: ?>
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Image</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($products as $product): ?>
+                                <tr>
+                                    <td><?= $product['id'] ?></td>
+                                    <td><?= htmlspecialchars($product['title']) ?></td>
+                                    <td><?= htmlspecialchars($product['description']) ?></td>
+                                    <td>$<?= number_format($product['price'], 2) ?></td>
+                                    <td>
+                                        <?php if ($product['image']): ?>
+                                            <img src="../<?= htmlspecialchars($product['image']) ?>"
+                                                alt="<?= htmlspecialchars($product['title']) ?>"
+                                                style="height: 50px; object-fit: cover;">
+                                        <?php else: ?>
+                                            <span class="text-muted">No image</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <a href="./admin/edit_product.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-warning me-1">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </a>
+                                        <a href="dashboard.php?delete_product_id=<?= $product['id'] ?>"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Delete this product?')">
                                             <i class="bi bi-trash"></i> Delete
                                         </a>
                                     </td>
