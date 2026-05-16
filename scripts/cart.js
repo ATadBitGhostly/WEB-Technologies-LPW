@@ -1,14 +1,32 @@
-function addToCart(id, title, price) {
+function addToCart(id, title, price, stock, qtyInputId = null) {
+    console.log('qtyInputId:', qtyInputId);
+    console.log('element found:', document.getElementById(qtyInputId));
+    const qty = qtyInputId ? parseInt(document.getElementById(qtyInputId).value) : 1;
+    console.log('qty:', qty);
+
+    if (qty < 1 || qty > stock) {
+        alert('Please select a valid quantity (1 - ' + stock + ').');
+        return;
+    }
+
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let item = cart.find(p => p.id === id);
-    if (item) {
-        item.quantity++;
-    } else {
-        cart.push({ id, title, price, quantity: 1 });
+    let currentQty = item ? item.quantity : 0;
+
+    if (currentQty + qty > stock) {
+        alert('Sorry! Only ' + (stock - currentQty) + ' more available for ' + title + '.');
+        return;
     }
+
+    if (item) {
+        item.quantity += qty;
+    } else {
+        cart.push({ id, title, price, quantity: qty, stock });
+    }
+
     localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount(); // ← pievieno
-    alert(title + ' added to cart!');
+    updateCartCount();
+    alert(qty + 'x ' + title + ' added to cart!');
 }
 
 function removeFromCart(id) {
@@ -23,7 +41,20 @@ function renderCart() {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const tbody = document.getElementById('cart-items');
     const totalEl = document.getElementById('cart-total');
+    const cartContent = document.getElementById('cart-content');
+    const cartEmpty = document.getElementById('cart-empty');
+
     if (!tbody) return;
+
+    // Show/hide empty cart message
+    if (cart.length === 0) {
+        if (cartContent) cartContent.style.display = 'none';
+        if (cartEmpty) cartEmpty.style.display = 'block';
+        return;
+    } else {
+        if (cartContent) cartContent.style.display = 'block';
+        if (cartEmpty) cartEmpty.style.display = 'none';
+    }
 
     tbody.innerHTML = '';
     let total = 0;
@@ -33,15 +64,18 @@ function renderCart() {
         tbody.innerHTML += `
             <tr>
                 <td>${item.title}</td>
-                <td>€${item.price}</td>
+                <td>€${parseFloat(item.price).toFixed(2)}</td>
                 <td>
-                    <input type="number" min="1" value="${item.quantity}"
-                           onchange="updateQuantity(${item.id}, this.value)"
+                    <input type="number" 
+                           min="1" 
+                           max="${item.stock}"
+                           value="${item.quantity}"
+                           onchange="updateQuantity(${item.id}, this.value, ${item.stock})"
                            class="form-control form-control-sm" style="width: 70px;">
                 </td>
                 <td>€${(item.price * item.quantity).toFixed(2)}</td>
                 <td>
-                    <button onclick="removeFromCart(${item.id})" 
+                    <button onclick="removeFromCart(${item.id})"
                             class="btn btn-danger btn-sm">
                         <i class="bi bi-trash"></i>
                     </button>
@@ -52,10 +86,19 @@ function renderCart() {
     if (totalEl) totalEl.innerText = '€' + total.toFixed(2);
 }
 
-function updateQuantity(id, quantity) {
+function updateQuantity(id, quantity, stock) {
+    let qty = parseInt(quantity);
+
+    // Stock limit pārbaude
+    if (qty < 1) qty = 1;
+    if (qty > stock) {
+        alert('Sorry! Only ' + stock + ' available in stock.');
+        qty = stock;
+    }
+
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let item = cart.find(p => p.id === id);
-    if (item) item.quantity = parseInt(quantity);
+    if (item) item.quantity = qty;
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
     renderCart();
@@ -73,3 +116,5 @@ function clearCart() {
     updateCartCount();
     renderCart();
 }
+
+document.addEventListener('DOMContentLoaded', updateCartCount);

@@ -7,10 +7,10 @@ class Product {
         $this->conn = $conn;
     }
 
-    public function create($title, $desc, $img, $price) {
+    public function create($title, $desc, $img, $price, $stock) {
         try {
-            $stmt = $this->conn->prepare("INSERT INTO products (title, description, image, price) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$title, $desc, $img, $price]);
+            $stmt = $this->conn->prepare("INSERT INTO products (title, description, image, price, stock) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $desc, $img, $price, $stock]);
         } catch (PDOException $e) {
             throw new Exception("Error creating product: " . $e->getMessage());
         }
@@ -36,10 +36,10 @@ class Product {
         }
     }
 
-    public function update($id, $title, $desc, $price) {
+    public function update($id, $title, $desc, $price, $stock) {
         try {
-            $stmt = $this->conn->prepare("UPDATE products SET title = ?, description = ?, price = ? WHERE id = ?");
-            $stmt->execute([$title, $desc, $price, $id]);
+            $stmt = $this->conn->prepare("UPDATE products SET title = ?, description = ?, price = ?, stock = ? WHERE id = ?");
+            $stmt->execute([$title, $desc, $price, $stock, $id]);
         } catch (PDOException $e) {
             throw new Exception("Error updating product: " . $e->getMessage());
         }

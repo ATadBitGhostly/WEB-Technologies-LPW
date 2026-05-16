@@ -221,6 +221,7 @@ $products = $stmt->fetchAll();
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Price</th>
+                                <th>Stock</th>
                                 <th>Image</th>
                                 <th>Actions</th>
                             </tr>
@@ -232,6 +233,13 @@ $products = $stmt->fetchAll();
                                     <td><?= htmlspecialchars($product['title']) ?></td>
                                     <td><?= htmlspecialchars($product['description']) ?></td>
                                     <td>$<?= number_format($product['price'], 2) ?></td>
+                                    <td>
+                                        <?php if ($product['stock'] > 0): ?>
+                                            <span class="badge bg-success">In Stock (<?= $product['stock'] ?>)</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-danger">Out of Stock</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td>
                                         <?php if ($product['image']): ?>
                                             <img src="../<?= htmlspecialchars($product['image']) ?>"

@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description'] ?? '');
     $image = trim($_POST['image'] ?? '');
     $price = trim($_POST['price'] ?? '');
+    $stock = trim($_POST['stock'] ?? '0');
 
     // PHP validācija
     if (empty($title)) {
@@ -25,13 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Description is required.";
     } elseif (empty($price)) {
         $error = "Price is required.";
+    } elseif (empty($stock)) {
+        $error = "Stock is required.";
     } elseif (!is_numeric($price) || $price <= 0) {
         $error = "Price must be a positive number.";
+    } elseif (!is_numeric($stock) || $stock < 0) {
+        $error = "Stock must be a non-negative integer.";
     } else {
         try {
             $db = new Database();
             $productManager = new Product($db->connect());
-            $productManager->create($title, $description, $image, $price);
+            $productManager->create($title, $description, $image, $price, $stock);
             $success = "Product added successfully!";
         } catch (Exception $e) {
             $error = $e->getMessage();
@@ -117,6 +122,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                min="0"
                                                value="<?= htmlspecialchars($_POST['price'] ?? '') ?>"
                                                required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="stock" class="form-label fw-semibold">Stock <span class="text-danger">*</span></label>
+                                        <input type="number" name="stock" id="stock"
+                                            class="form-control"
+                                            placeholder="Available stock"
+                                            min="0"
+                                            value="<?= htmlspecialchars($_POST['stock'] ?? '') ?>"
+                                            required>
                                     </div>
 
                                     <div class="mb-4">

@@ -115,15 +115,42 @@ if (!$product) {
                         <p class="lead"><?= htmlspecialchars($product['description']) ?></p>
                         <h3 class="fw-bold mt-4">€<?= htmlspecialchars($product['price']) ?></h3>
 
-                        <div class="mt-4 d-flex gap-3">
-                            <button onclick="addToCart(<?= $product['id'] ?>, '<?= htmlspecialchars($product['title']) ?>', <?= $product['price'] ?>)"
-                                    class="btn btn-primary btn-lg">
-                                <i class="bi bi-cart-plus"></i> Add to Cart
+                        <?php if ($product['stock'] <= 0): ?>
+                            <!-- Out of stock banner -->
+                            <div class="alert alert-danger mt-3">
+                                <i class="bi bi-x-circle"></i> This product is currently <strong>out of stock.</strong> Check back later!
+                            </div>
+                            <button class="btn btn-secondary btn-lg mt-2" disabled>
+                                <i class="bi bi-cart-x"></i> Out of Stock
                             </button>
-                            <a href="cart.php" class="btn btn-outline-primary btn-lg">
-                                <i class="bi bi-cart"></i> View Cart
-                            </a>
-                        </div>
+                        <?php else: ?>
+                            <!-- In stock -->
+                            <div class="alert alert-success mt-3">
+                                <i class="bi bi-check-circle"></i> In Stock — <strong><?= $product['stock'] ?></strong> available
+                            </div>
+
+                            <!-- Quantity selector -->
+                            <div class="d-flex align-items-center gap-3 mt-4">
+                                <label for="quantity" class="fw-semibold mb-0">Quantity:</label>
+                                <input type="number" id="quantity"
+                                    class="form-control"
+                                    style="width: 90px;"
+                                    value="1"
+                                    min="1"
+                                    max="<?= $product['stock'] ?>">
+                            </div>
+
+                            <div class="mt-4 d-flex gap-3">
+                                <button id="addToCartBtn"
+                                        onclick="addToCart(<?= $product['id'] ?>, '<?= htmlspecialchars($product['title'], ENT_QUOTES) ?>', <?= $product['price'] ?>, <?= $product['stock'] ?>, 'quantity')"
+                                        class="btn btn-primary btn-lg">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                                <a href="cart.php" class="btn btn-outline-primary btn-lg">
+                                    <i class="bi bi-cart"></i> View Cart
+                                </a>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                 </div>

@@ -50,7 +50,8 @@ try {
             title VARCHAR(255) NOT NULL,
             description TEXT,
             image VARCHAR(255),
-            price DECIMAL(10,2) NOT NULL
+            price DECIMAL(10,2) NOT NULL,
+            stock INT NOT NULL DEFAULT 0
         )
     ");
 

@@ -119,18 +119,46 @@ if (!empty($searchTerm)) {
                         <?php foreach ($products as $p): ?>
                             <div class="col-lg-3 col-md-6 my-2">
                                 <div class="card h-100 shadow-sm">
-                                    <div class="card-body">
+                                    
+                                    <?php if ($p['stock'] <= 0): ?>
+                                        <div class="bg-danger text-white text-center py-1" style="font-size: 0.85rem;">
+                                            <i class="bi"></i> Out of Stock
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="bg-success text-white text-center py-1" style="font-size: 0.85rem;">
+                                            <i class="bi"></i> In Stock (<?= $p['stock'] ?>)
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <div class="card-body d-flex flex-column">
                                         <?php
                                             $imgSrc = "../" . str_replace('\\', '/', $p['image']);
                                         ?>
-                                        <img src="<?= htmlspecialchars($imgSrc) ?>" alt="<?= htmlspecialchars($p['title']) ?>"class="mb-3" style="max-height: 150px; width: auto;">
+                                        <img src="<?= htmlspecialchars($imgSrc) ?>"
+                                            alt="<?= htmlspecialchars($p['title']) ?>"
+                                            class="mb-3 mx-auto"
+                                            style="max-height: 150px; width: auto;">
                                         <h2 class="h4"><?= htmlspecialchars($p['title']) ?></h2>
                                         <p class="card-text"><?= htmlspecialchars($p['description']) ?></p>
                                         <p class="fw-bold">€<?= htmlspecialchars($p['price']) ?></p>
-                                        <a href="product_details.php?id=<?= $p['id'] ?>" class="btn btn-outline-primary btn-sm me-2">View Details</a>
-                                        <button onclick="addToCart(<?= $p['id'] ?>, '<?= htmlspecialchars($p['title']) ?>', <?= $p['price'] ?>)" class="btn btn-primary btn-sm">
-                                            <i class="bi bi-cart-plus"></i> Add to Cart
-                                        </button>
+
+                                        <div class="mt-auto d-flex gap-2">
+                                            <a href="product_details.php?id=<?= $p['id'] ?>"
+                                            class="btn btn-outline-primary btn-sm">
+                                                View Details
+                                            </a>
+
+                                            <?php if ($p['stock'] <= 0): ?>
+                                                <button class="btn btn-secondary btn-sm" disabled>
+                                                    <i class="bi bi-cart-x"></i> Out of Stock
+                                                </button>
+                                            <?php else: ?>
+                                                <button onclick="addToCart(<?= $p['id'] ?>, '<?= htmlspecialchars($p['title'], ENT_QUOTES) ?>', <?= $p['price'] ?>, <?= $p['stock'] ?>)"
+                                                        class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
