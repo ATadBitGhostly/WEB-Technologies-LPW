@@ -142,7 +142,7 @@ if (!empty($searchTerm)) {
                                         <p class="card-text"><?= htmlspecialchars($p['description']) ?></p>
                                         <p class="fw-bold">€<?= htmlspecialchars($p['price']) ?></p>
 
-                                        <div class="mt-auto d-flex gap-2">
+                                        <div class="mt-auto d-flex gap-2 justify-content-center">
                                             <a href="product_details.php?id=<?= $p['id'] ?>"
                                             class="btn btn-outline-primary btn-sm">
                                                 View Details

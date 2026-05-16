@@ -142,7 +142,7 @@ if (!$product) {
 
                             <div class="mt-4 d-flex gap-3">
                                 <button id="addToCartBtn"
-                                        onclick="addToCart(<?= $product['id'] ?>, '<?= htmlspecialchars($product['title'], ENT_QUOTES) ?>', <?= $product['price'] ?>, <?= $product['stock'] ?>, 'quantity')"
+                                        onclick="addToCart(<?= $product['id'] ?>, '<?= htmlspecialchars($product['title'], ENT_QUOTES) ?>', <?= $product['price'] ?>, <?= $product['stock'] ?>, document.getElementById('quantity').value)"
                                         class="btn btn-primary btn-lg">
                                     <i class="bi bi-cart-plus"></i> Add to Cart
                                 </button>

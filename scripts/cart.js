@@ -1,8 +1,12 @@
-function addToCart(id, title, price, stock, qtyInputId = null) {
-    console.log('qtyInputId:', qtyInputId);
-    console.log('element found:', document.getElementById(qtyInputId));
-    const qty = qtyInputId ? parseInt(document.getElementById(qtyInputId).value) : 1;
-    console.log('qty:', qty);
+function addToCart(id, title, price, stock, qty = 1) {
+    console.log('--- addToCart called ---');
+    console.log('id:', id);
+    console.log('title:', title);
+    console.log('price:', price);
+    console.log('stock:', stock);
+    console.log('qty received:', qty);
+    qty = parseInt(qty);
+    console.log('qty after parseInt:', qty);
 
     if (qty < 1 || qty > stock) {
         alert('Please select a valid quantity (1 - ' + stock + ').');
@@ -28,6 +32,7 @@ function addToCart(id, title, price, stock, qtyInputId = null) {
     updateCartCount();
     alert(qty + 'x ' + title + ' added to cart!');
 }
+
 
 function removeFromCart(id) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
