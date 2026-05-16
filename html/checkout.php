@@ -1,11 +1,16 @@
 <?php
 session_start();
+require_once '../includes/db.php';
+
+$stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch();
+
 // Only logged-in users can access checkout
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -102,7 +107,7 @@ if (!isset($_SESSION['user_id'])) {
                                         </div>
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required>
+                                            <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" placeholder="john@example.com" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="address" class="form-label">Address</label>

@@ -37,21 +37,70 @@ function renderCheckout() {
         });
         if (totalEl) totalEl.textContent = '€' + total.toFixed(2);
 
-        // Sync these for the PHP side
         const minimal = cart.map(i => ({ id: i.id, quantity: i.quantity }));
         document.getElementById('cart_json').value = JSON.stringify(minimal);
         document.getElementById('cart_total_client').value = total.toFixed(2);
     }
 }
 
-document.addEventListener('DOMContentLoaded', renderCheckout);
+function validateCardNumber(input) {
+    const digits = input.value.replace(/\s+/g, '');
+    if (digits.length < 13 || digits.length > 19) {
+        input.setCustomValidity('Invalid length.');
+    } else {
+        input.setCustomValidity('');
+    }
+}
+
+function validateExpiry(input) {
+    const val = input.value.trim();
+    if (!/^\d{2}\/\d{2}$/.test(val)) {
+        input.setCustomValidity('Format must be MM/YY.');
+        return;
+    }
+    const [mm, yy] = val.split('/').map(n => parseInt(n, 10));
+    const now = new Date();
+    const curYY = now.getFullYear() % 100;
+    const curMM = now.getMonth() + 1;
+
+    if (mm < 1 || mm > 12) {
+        input.setCustomValidity('Invalid month.');
+    } else if (yy < curYY || (yy === curYY && mm < curMM)) {
+        input.setCustomValidity('Card has expired.');
+    } else {
+        input.setCustomValidity('');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    renderCheckout();
+
+    const cardInput = document.getElementById('card_number');
+    const expiryInput = document.getElementById('card_expiry');
+
+    // Auto-format card number as XXXX XXXX XXXX XXXX
+    cardInput.addEventListener('input', function () {
+        const digits = this.value.replace(/\D/g, '').slice(0, 16);
+        this.value = digits.replace(/(.{4})/g, '$1 ').trim();
+        validateCardNumber(this);
+    });
+
+    // Auto-format expiry as MM/YY
+    expiryInput.addEventListener('input', function (e) {
+        let digits = this.value.replace(/\D/g, '').slice(0, 4);
+        if (digits.length >= 3) {
+            digits = digits.slice(0, 2) + '/' + digits.slice(2);
+        }
+        this.value = digits;
+        validateExpiry(this);
+    });
+});
 
 document.getElementById('checkout-form').addEventListener('submit', function (e) {
     const form = this;
     const cart = getCart();
     const errorDiv = document.getElementById('checkout-error');
 
-    // 1. Check if cart is empty
     if (cart.length === 0) {
         e.preventDefault();
         errorDiv.textContent = 'Your cart is empty.';
@@ -60,39 +109,13 @@ document.getElementById('checkout-form').addEventListener('submit', function (e)
     }
     errorDiv.style.display = 'none';
 
-    // 2. Clear all previous custom errors
     const cardInput = document.getElementById('card_number');
     const expiryInput = document.getElementById('card_expiry');
-    cardInput.setCustomValidity('');
-    expiryInput.setCustomValidity('');
 
-    // 3. Validate Card Number (Ignore spaces, count digits)
-    const cardDigits = cardInput.value.replace(/\s+/g, '');
-    if (cardDigits.length < 13 || cardDigits.length > 19) {
-        cardInput.setCustomValidity('Invalid length.');
-    }
+    // Run validation once more on submit to catch untouched fields
+    validateCardNumber(cardInput);
+    validateExpiry(expiryInput);
 
-    // 4. Validate Expiry Date (MM/YY)
-    const expiryVal = expiryInput.value.trim();
-    if (/^\d{2}\/\d{2}$/.test(expiryVal)) {
-        const parts = expiryVal.split('/');
-        const mm = parseInt(parts[0], 10);
-        const yy = parseInt(parts[1], 10);
-
-        const now = new Date();
-        const curYY = now.getFullYear() % 100; // 26
-        const curMM = now.getMonth() + 1;      // 5
-
-        if (mm < 1 || mm > 12) {
-            expiryInput.setCustomValidity('Invalid month.');
-        } else if (yy < curYY || (yy === curYY && mm < curMM)) {
-            expiryInput.setCustomValidity('Card has expired.');
-        }
-    } else {
-        expiryInput.setCustomValidity('Format must be MM/YY.');
-    }
-
-    // 5. Trigger Bootstrap visuals
     form.classList.add('was-validated');
 
     if (!form.checkValidity()) {
@@ -101,6 +124,5 @@ document.getElementById('checkout-form').addEventListener('submit', function (e)
         return;
     }
 
-    // Ensure hidden inputs are updated one last time
     renderCheckout();
 });
