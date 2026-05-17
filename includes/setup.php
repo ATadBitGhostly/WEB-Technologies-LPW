@@ -79,6 +79,12 @@ try {
         )
     ");
 
+    // Add stock column if it doesn't exist (for existing databases)
+    $pdo->exec("
+    ALTER TABLE products 
+    ADD COLUMN IF NOT EXISTS stock INT NOT NULL DEFAULT 0
+    ");
+
     echo "Tables created successfully!";
 
 } catch (PDOException $e) {
