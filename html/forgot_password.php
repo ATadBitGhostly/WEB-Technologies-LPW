@@ -3,32 +3,30 @@ session_start();
 require_once __DIR__ . '/../includes/db.php';
 
 if (isset($_SESSION['user_id'])) {
-    header('Location: dashboard.php'); // Dashboard needed
+    header('Location: dashboard.php');
     exit;
 }
+
 $errors = [];
+$success = false;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
-    if (empty($username) || empty($password)) {
-        $errors[] = "Username or Password is empty";
-    }
-    if (empty($errors)) {
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-        $stmt->execute([$username]);
+    $email = trim($_POST['email']);
+
+    if (empty($username) || empty($email)) {
+        $errors[] = 'Please fill in both fields.';
+    } else {
+        $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? AND email = ?");
+        $stmt->execute([$username, $email]);
         $user = $stmt->fetch();
 
-        if ($username && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-
-            setcookie("remember_user", $user['username'], time() + (86000 * 30), "/");
-            setcookie("last_login", date("d/m/y H:i"), time() + (86000 * 30), "/");
-
-            header('Location: dashboard.php');
+        if ($user) {
+            $_SESSION['reset_user_id'] = $user['id'];
+            header('Location: reset_password.php');
             exit;
         } else {
-            $errors[] = "Username or Password is invalid";
+            $errors[] = 'No account found with that username and email.';
         }
     }
 }
@@ -44,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <title>Register - Sports Page 101</title>
+    <title>Forgot Password - Sports Page 101</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-slightyDarkBlue">
@@ -62,36 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <span id="cart-count" class="badge border">0</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="index.php" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="about.php" class="nav-link">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="services.php" class="nav-link">Services</a>
-                    </li>
-                    <li class="nav-item">
-                            <a href="product.php" class="nav-link">Products</a>
-                        </li>
-                    <li class="nav-item">
-                        <a href="contact.php" class="nav-link">Contact</a>
-                    </li>
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <li class="nav-item">
-                            <a href="dashboard.php" class="nav-link">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="logout.php" class="nav-link">Logout</a>
-                        </li>
-                    <?php else: ?>
-                        <li class="nav-item">
-                            <a href="register.php" class="nav-link">Register</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="login.php" class="nav-link">Login</a>
-                        </li>
-                    <?php endif; ?>
+                    <li class="nav-item"><a href="index.php" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="about.php" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="services.php" class="nav-link">Services</a></li>
+                    <li class="nav-item"><a href="product.php" class="nav-link">Products</a></li>
+                    <li class="nav-item"><a href="contact.php" class="nav-link">Contact</a></li>
+                    <li class="nav-item"><a href="register.php" class="nav-link">Register</a></li>
+                    <li class="nav-item"><a href="login.php" class="nav-link">Login</a></li>
                 </ul>
             </div>
         </div>
@@ -100,8 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main>
         <section class="py-5">
             <div class="container text-center">
-                <h1 class="display-4 fw-normal">Welcome back!</h1>
-                <p class="lead mt-3">Log in to your Sports Page 101 account.</p>
+                <h1 class="display-4 fw-normal">Forgot Password</h1>
+                <p class="lead mt-3">Enter your username and email to reset your password.</p>
             </div>
         </section>
         <hr class="container my-0">
@@ -111,13 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="row justify-content-center">
                     <div class="col-lg-5 col-md-7">
                         <div class="card shadow-sm p-4">
-
-                            <?php if (isset($_COOKIE['remember_user']) && isset($_COOKIE['last_visit'])): ?>
-                                <div class="alert alert-info">
-                                    Welcome back, <strong><?= htmlspecialchars($_COOKIE['remember_user']) ?></strong>!
-                                    Last visit: <?= htmlspecialchars($_COOKIE['last_visit']) ?>
-                                </div>
-                            <?php endif; ?>
 
                             <?php if (!empty($errors)): ?>
                                 <div class="alert alert-danger">
@@ -129,23 +97,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             <?php endif; ?>
 
-                            <form method="POST" action="login.php">
+                            <form method="POST" action="forgot_password.php">
                                 <div class="mb-3">
-                                    <?php if (isset($_GET['reset'])): ?>
-                                        <div class="alert alert-success">Password reset successfully. You can now log in.</div>
-                                    <?php endif; ?>
                                     <input type="text" name="username" class="form-control"
-                                        placeholder="Username"
-                                        value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
+                                           placeholder="Username"
+                                           value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="password" name="password" class="form-control"
-                                        placeholder="Password" required>
+                                    <input type="email" name="email" class="form-control"
+                                           placeholder="Email address"
+                                           value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">Log In</button>
+                                <button type="submit" class="btn btn-primary w-100">Continue</button>
                             </form>
-                            <p class="mt-3 text-center mb-0">Don't have an account? <a href="register.php">Register</a></p>
-                            <p class="mt-2 text-center mb-0"> <a href="forgot_password.php">Forgot your password?</a></p>
+                            <p class="mt-3 text-center mb-0">
+                                Remembered it? <a href="login.php">Back to Login</a>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -160,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="#" class="link-light text-decoration-none me-3 link-opacity-75-hover">Twitter</a>
                 <a href="#" class="link-light text-decoration-none me-3 link-opacity-75-hover">Instagram</a>
             </div>
-            <p class="mb-0">&copy; <p id="dynamicDate"></p> Sports Page 101. All rights reserved.</p>
+            <p class="mb-0">&copy; <span id="dynamicDate"></span> Sports Page 101. All rights reserved.</p>
         </div>
     </footer>
 
