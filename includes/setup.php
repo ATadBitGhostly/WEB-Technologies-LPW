@@ -81,9 +81,35 @@ try {
 
     // Add stock column if it doesn't exist (for existing databases)
     $pdo->exec("
-    ALTER TABLE products 
-    ADD COLUMN IF NOT EXISTS stock INT NOT NULL DEFAULT 0
+        ALTER TABLE products 
+        ADD COLUMN IF NOT EXISTS stock INT NOT NULL DEFAULT 0
     ");
+
+    // Adds status column to orders table if it doesn't exist
+    $pdo->exec("
+        ALTER TABLE orders 
+        ADD COLUMN IF NOT EXISTS status VARCHAR(50) NOT NULL DEFAULT 'pending'
+    ");
+
+    // Adds isAdmin column to users table if it doesn't exist
+    $pdo->exec("
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS isAdmin TINYINT(1) NOT NULL DEFAULT 0
+    ");
+
+    // Creates a default admin user, if one does not exist
+    $adminEmail = 'admin@admin.com';
+    $adminUsername = 'admin';
+    $adminPassword = password_hash('admin123', PASSWORD_DEFAULT);
+
+    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt->execute([$adminEmail]);
+
+    if (!$stmt->fetch()) {
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, isAdmin) VALUES (?, ?, ?, 1)");
+        $stmt->execute([$adminUsername, $adminEmail, $adminPassword]);
+        echo " Admin user created!";
+    }  
 
     echo "Tables created successfully!";
 
