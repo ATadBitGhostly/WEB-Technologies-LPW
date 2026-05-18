@@ -22,6 +22,8 @@ if (!$product) {
 }
 
 
+$basePath = '../';   // ← for css, js, includes
+$htmlPath = '';     // ← for links in this file to point to the right place
 $activePage = 'product_details';
 $pageTitle = 'Product Details - Sports Page 101';
 require_once __DIR__ . '/../includes/header.php';

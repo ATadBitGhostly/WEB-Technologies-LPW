@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$basePath = '../';   // ← for css, js, includes
+$htmlPath = '';     // ← for links in this file to point to the right place
 $activePage = 'reset_password';
 $pageTitle = 'Reset Password - Sports Page 101';
 require_once __DIR__ . '/../includes/header.php';

@@ -91,7 +91,8 @@ foreach ($orders as $order) {
     $orderItems[$order['id']] = $s->fetchAll();
 }
 
-$basePath = '../../';
+$basePath = '../../'; // for header.php to correctly link CSS and other resources
+$htmlPath = '../';  // for links in this file to point to the right place
 $activePage = 'dashboard';
 $pageTitle = 'Admin Dashboard - Sports Page 101';
 require_once __DIR__ . '/../../includes/header.php';

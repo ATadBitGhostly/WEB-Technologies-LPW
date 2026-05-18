@@ -18,6 +18,8 @@ $order_total = $_SESSION['last_order_total'];
 // Clear so refreshing doesn't show stale data
 unset($_SESSION['last_order_id'], $_SESSION['last_order_total']);
 
+$basePath = '../';   // ← for css, js, includes
+$htmlPath = '';     // ← for links in this file to point to the right place
 $activePage = 'order_confirm';
 $pageTitle = 'Order Confirmation - Sports Page 101';
 require_once __DIR__ . '/../includes/header.php';

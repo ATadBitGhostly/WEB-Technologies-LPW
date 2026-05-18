@@ -17,6 +17,8 @@ if (!empty($searchTerm)) {
     $services = $serviceManager->readAll();
 }
 
+$basePath = '../';   // ← for css, js, includes
+$htmlPath = '';     // ← for links in this file to point to the right place
 $activePage = 'services';
 $pageTitle = 'Services - Sports Page 101';
 require_once __DIR__ . '/../includes/header.php';

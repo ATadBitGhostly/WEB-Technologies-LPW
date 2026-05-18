@@ -28,39 +28,39 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a href="cart.php" class="nav-link">
+                        <a href="<?= $htmlPath ?>cart.php" class="nav-link">
                             <i class="bi bi-cart"></i>
                             <span id="cart-count" class="badge border">0</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="index.php" class="nav-link <?= ($activePage ?? '') === 'home' ? 'active' : '' ?>">Home</a>
+                        <a href="<?= $htmlPath ?>index.php" class="nav-link <?= ($activePage ?? '') === 'home' ? 'active' : '' ?>">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="about.php" class="nav-link <?= ($activePage ?? '') === 'about' ? 'active' : '' ?>">About</a>
+                        <a href="<?= $htmlPath ?>about.php" class="nav-link <?= ($activePage ?? '') === 'about' ? 'active' : '' ?>">About</a>
                     </li>
                     <li class="nav-item">
-                        <a href="services.php" class="nav-link <?= ($activePage ?? '') === 'services' ? 'active' : '' ?>">Services</a>
+                        <a href="<?= $htmlPath ?>services.php" class="nav-link <?= ($activePage ?? '') === 'services' ? 'active' : '' ?>">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a href="product.php" class="nav-link <?= ($activePage ?? '') === 'products' ? 'active' : '' ?>">Products</a>
+                        <a href="<?= $htmlPath ?>product.php" class="nav-link <?= ($activePage ?? '') === 'products' ? 'active' : '' ?>">Products</a>
                     </li>
                     <li class="nav-item">
-                        <a href="contact.php" class="nav-link <?= ($activePage ?? '') === 'contact' ? 'active' : '' ?>">Contact</a>
+                        <a href="<?= $htmlPath ?>contact.php" class="nav-link <?= ($activePage ?? '') === 'contact' ? 'active' : '' ?>">Contact</a>
                     </li>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <li class="nav-item">
                             <a href="dashboard.php" class="nav-link <?= ($activePage ?? '') === 'dashboard' ? 'active' : '' ?>">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a href="logout.php" class="nav-link">Logout</a>
+                            <a href="<?= $htmlPath ?>logout.php" class="nav-link">Logout</a>
                         </li>
                     <?php else: ?>
                         <li class="nav-item">
-                            <a href="register.php" class="nav-link <?= ($activePage ?? '') === 'register' ? 'active' : '' ?>">Register</a>
+                            <a href="<?= $htmlPath ?>register.php" class="nav-link <?= ($activePage ?? '') === 'register' ? 'active' : '' ?>">Register</a>
                         </li>
                         <li class="nav-item">
-                            <a href="login.php" class="nav-link <?= ($activePage ?? '') === 'login' ? 'active' : '' ?>">Login</a>
+                            <a href="<?= $htmlPath ?>login.php" class="nav-link <?= ($activePage ?? '') === 'login' ? 'active' : '' ?>">Login</a>
                         </li>
                     <?php endif; ?>
                 </ul>

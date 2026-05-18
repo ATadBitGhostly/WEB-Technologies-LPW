@@ -43,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 //• Passwords must be hashed (e.g., password_hash).
 
 
+$basePath = '../';   // ← for css, js, includes
+$htmlPath = '';     // ← for links in this file to point to the right place
 $activePage = 'register';
 $pageTitle = 'Register - Sports Page 101';
 require_once __DIR__ . '/../includes/header.php';

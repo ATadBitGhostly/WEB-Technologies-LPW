@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$basePath = '../';   // ← for css, js, includes
+$htmlPath = '';     // ← for links in this file to point to the right place
 $activePage = 'about';
 $pageTitle = 'About - Sports Page 101';
 require_once __DIR__ . '/../includes/header.php';
