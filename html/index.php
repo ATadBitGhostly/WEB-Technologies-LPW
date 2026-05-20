@@ -29,7 +29,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <div class="card shadow-sm p-4 text-center">
                         <h2 class="mb-3">What is Sports Page 101?</h2>
                         <p>Sports Page 101 is a comprehensive platform dedicated to providing the latest news, insights, and analysis on various sports. Whether you're a fan of football, basketball, baseball, or any other sport, we've got you covered with in-depth articles, expert opinions, and up-to-date scores. Our mission is to keep you informed and engaged with the world of sports.</p>
-                        <button class="btn btn-primary mt-3">The Call-To-Action button</button>
+                        <a href="about.php" class="btn btn-primary mt-3">To About Page</a>
                     </div>
                 </div>
             </div>
